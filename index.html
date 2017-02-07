@@ -6,11 +6,11 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
-
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.4.2/Control.FullScreen.min.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.4.2/Control.FullScreen.min.css">
         <link rel="stylesheet" href="src/leaflet.timedimension.control.css" />
         <link rel="stylesheet" href="css/leaflet.groupedlayercontrol.min.css" />
+        <link rel="stylesheet" href="css/easy-button.css" />
         <link rel="stylesheet" href="css/style.css" />
 
 
@@ -33,7 +33,7 @@
 			/*top: 25px;*/
 			/*left: 150px;*/
 			font-size: 25px;
-			padding: 10px;
+			padding: 10px 20px 10px 20px;
             z-index: 999999999999999999999999999;
             text-align: center;
             box-shadow: 0 1px 5px rgba(0,0,0,0.65);
@@ -44,7 +44,7 @@
 		}
        .legend {
             line-height: 30px;
-            color: #555;
+            background-color: rgb(255,255,255)!important;
            box-shadow: 0 1px 5px rgba(0,0,0,0.65);
             border-radius: 4px;
            padding:10px;
@@ -83,6 +83,7 @@
 <body>
 
     <div id="map"></div>
+         <script src="//use.fontawesome.com/ad63e9f1ed.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
         <script type="text/javascript" src="//cdn.rawgit.com/tryone144/dateFormat/master/date.format.js"></script>
         <script src="//cdn.jsdelivr.net/leaflet/1.0.0-rc.3/leaflet-src.js"></script>
@@ -100,6 +101,7 @@
         <script type="text/javascript" src="src/leaflet.timedimension.player.js"></script>
         <script type="text/javascript" src="src/leaflet.timedimension.control.js"></script>
         <script type="text/javascript" src="js/leaflet.groupedlayercontrol.min.js"></script>
+        <script type="text/javascript" src="js/easy-button.js"></script>
         <script type="text/javascript" src="js/baselayers.js"></script>
         <script type="text/javascript" src="js/mapControl.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>

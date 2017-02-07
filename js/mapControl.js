@@ -44,7 +44,7 @@ var customControl =  L.Control.extend({
         container.id= 'dateDisp'
         container.style.backgroundColor = 'white';
         container.style.position = 'relative';
-        container.style.width = '45%'
+        container.style.width = '150px'
         container.style.margin = '10 auto';
         //container.style.backgroundImage = "url(http://t1.gstatic.com/images?q=tbn:ANd9GcR6FCUMW5bPn8C4PbKak2BJQQsmC-K9-mbYBeFZm1ZM2w2GRy40Ew)";
         // container.style.backgroundSize = "30px 30px";
@@ -309,12 +309,11 @@ var customLayer4_full = L.geoJson(null, {
         }
     }
 });
-var gpxLayer = omnivore.gpx('data/Deer_34003.gpx', null, customLayer);
-//     .on('ready', function() {
-//     map.fitBounds(gpxLayer.getBounds(), {
-//         paddingBottomRight: [40, 40]
-//     });
-// });
+var gpxLayer = omnivore.gpx('data/Deer_34003.gpx', null, customLayer).on('ready', function() {
+    map.fitBounds(gpxLayer.getBounds(), {
+        paddingBottomRight: [40, 40]
+    });
+});
 
 var gpxTimeLayer = L.timeDimension.layer.geoJson(gpxLayer, {
     updateTimeDimension: true,
@@ -333,9 +332,9 @@ var gpxLayer3_full = omnivore.gpx('data/Elk_WasatchCurrantCreek.gpx', null, cust
 var gpxLayer4 = omnivore.gpx('data/deer3.gpx', null, customLayer4);
 var group = new L.featureGroup([gpxLayer, gpxLayer2, gpxLayer3, gpxLayer4]);
 var gpxLayer4_full = omnivore.gpx('data/deer3.gpx', null, customLayer4).on('ready', function() {
-    map.fitBounds(group.getBounds(), {
-        paddingBottomRight: [40, 40]
-    });
+    // map.fitBounds(group.getBounds(), {
+    //     paddingBottomRight: [40, 40]
+    // });
 });
 
 // map.fitBounds(group.getBounds());
@@ -388,7 +387,7 @@ function getColor(d) {
 }
 
  var legend = L.control({position: 'bottomright'});
-
+var legend2 = L.control({position: 'bottomright'});
 legend.onAdd = function (map) {
 
     var div = L.DomUtil.create('div', 'info legend'),
@@ -396,12 +395,12 @@ legend.onAdd = function (map) {
         labels = [];
 
     // loop through our density intervals and generate a label with a colored square for each interval
-    div.innerHTML += '<div style="width: 100%;margin-bottom:10px; border-bottom: 1px solid black; text-align: center" > <span style="font-size: 15px; margin: 6px;"><b>Symbols</b> <!--Padding is optional--> </span></div>'
+    div.innerHTML += '<div style="width: 100%;margin-bottom:10px; border-bottom: 1px solid black; text-align: center" > <span style="font-size: 15px; margin: 6px;"><b>Symbols</b> <!--Padding is optional--> </span></div>';
     div.innerHTML +=
             ('<i style="border:none;">'+" <img src="+ "img/deer.png" +" height='25' width='25'>")+"</i>" +' Mule Deer' + '<br>';
     div.innerHTML +=
             ('<i style="border:none;">'+" <img src="+ "img/elk.png" +" height='25' width='25'>")+"</i>" +' Elk' ;
-    div.innerHTML += '<div style="width: 100%;margin-bottom:10px; border-bottom: 1px solid black; text-align: center" > <span style="font-size: 15px; margin: 6px;"><b>Land Ownership</b> <!--Padding is optional--> </span></div>'
+    div.innerHTML += '<div style="width: 100%;margin-bottom:10px; border-bottom: 1px solid black; text-align: center" > <span style="font-size: 15px; margin: 6px;"><b>Land Ownership</b> <!--Padding is optional--> </span></div>';
     for (var i = 0; i < grades.length; i++) {
         div.innerHTML +=
             '<i style="background:' + getColor(grades[i]) + '"></i> ' +
@@ -410,7 +409,19 @@ legend.onAdd = function (map) {
 
     return div;
 };
-legend.addTo(map);
+legend2.onAdd = function (map) {
+
+    var div = L.DomUtil.create('div', 'info legend');
+
+    div.innerHTML += '<div style="width: 100%;margin-bottom:10px; border-bottom: 1px solid black; text-align: center" > <span style="font-size: 15px; margin: 6px;"><b>Symbols</b> <!--Padding is optional--> </span></div>';
+    div.innerHTML +=
+            ('<i style="border:none;">'+" <img src="+ "img/deer.png" +" height='25' width='25'>")+"</i>" +' Mule Deer' + '<br>';
+    div.innerHTML +=
+            ('<i style="border:none;">'+" <img src="+ "img/elk.png" +" height='25' width='25'>")+"</i>" +' Elk' ;
+    return div;
+};
+var currentLegend = legend;
+currentLegend.addTo(map);
 var groupedOverlays = {
   "Elk Group": {
     "Normal": gpxTimeLayer3,
@@ -434,4 +445,64 @@ L.control.groupedLayers(baseLayers, groupedOverlays).addTo(map);
 
 gpxTimeLayer.addTo(map);
 ref.addTo(map);
+var legendToggle = L.easyButton({
+  states: [{
+    stateName: 'legend-on',
+    icon: 'fa-list-ul',
+    title: 'Toggle Legend Off',
+    onClick: function(control) {
+      map.removeControl(currentLegend);
+      control.state('legend-off');
+    }
+  }, {
+    icon: 'fa-th-list',
+    stateName: 'legend-off',
+    onClick: function(control) {
+      currentLegend.addTo(map);
+      control.state('legend-on');
+    },
+    title: 'Toggle Legend On'
+  }]
+});
+legendToggle.addTo(map);
+map.on('overlayadd', function (eventLayer) {
+    if (eventLayer.name === 'Deer 1') {
+        map.flyToBounds(gpxLayer.getBounds(), {
+        paddingBottomRight: [40, 40]
+    })
+    }
+    else if  (eventLayer.name === 'Deer 2') {
+       map.flyToBounds(gpxLayer2.getBounds(), {
+        paddingBottomRight: [40, 40]
+    })
+    }
+    else if  (eventLayer.group.name === 'Deer Group') {
+       map.flyToBounds(gpxLayer4.getBounds(), {
+        paddingBottomRight: [40, 40]
+    })
+    }
+    else if  (eventLayer.group.name === 'Elk Group') {
+       map.flyToBounds(gpxLayer3.getBounds(), {
+        paddingBottomRight: [40, 40]
+    })
+    }
+});
+map.on('overlayadd', function (eventLayer) {
+    if (eventLayer.name === 'Land Ownership') {
+        map.removeControl(currentLegend );
+        currentLegend = legend;
+        if (legendToggle._currentState.stateName === 'legend-on') {
+            currentLegend.addTo(map);
+        }
+    }
+    });
+map.on('overlayremove', function (eventLayer) {
+    if (eventLayer.name === 'Land Ownership') {
+        map.removeControl(currentLegend );
+        currentLegend = legend2;
+       if (legendToggle._currentState.stateName === 'legend-on') {
+            currentLegend.addTo(map);
+        }
+    }
+    });
 L.control.scale({position: "topright"}).addTo(map);
