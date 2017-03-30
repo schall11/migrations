@@ -1,7 +1,8 @@
 /*
  * L.TimeDimension.Layer.GeoJson:
  */
-
+ window.chartData= [];
+ window.labels = [];
 L.TimeDimension.Layer.GeoJson = L.TimeDimension.Layer.extend({
 
     initialize: function(layer, options) {
@@ -64,8 +65,59 @@ L.TimeDimension.Layer.GeoJson = L.TimeDimension.Layer.extend({
         // new coordinates:
         var layer = L.geoJson(null, this._baseLayer.options);
         var layers = this._baseLayer.getLayers();
+
+
+
+        // window.myPieChart.addData(   {
+        // value: 300,
+        // color:"#00ffff",
+        // highlight: "#FF5A5E",
+        // label: "Red"
+        //     });
+
+
+
         for (var i = 0, l = layers.length; i < l; i++) {
             var feature = this._getFeatureBetweenDates(layers[i].feature, minTime, maxTime);
+             var totalDistance = 0.000;
+
+                 if (feature) {
+                     // console.log(layers[i].feature);
+                     totalDistance += (L.latLng(feature.geometry.coordinates[0][0], feature.geometry.coordinates[0][1], feature.geometry.coordinates[0][2])).distanceTo(L.latLng(feature.geometry.coordinates[feature.geometry.coordinates.length-1][0], feature.geometry.coordinates[feature.geometry.coordinates.length- 1][1], feature.geometry.coordinates[feature.geometry.coordinates.length - 1][2]))
+
+                 }
+            if (layers[i].feature.properties.name == "34003"){
+                     // window.chartData.push((totalDistance/1609.34).toFixed(1));
+                     // console.log(layers[i].feature.properties);
+                     var d = (layers[i].feature.properties.time).substring(8,10);
+                     var h = (layers[i].feature.properties.time).substring(11,13);
+                     var y = (layers[i].feature.properties.time).substring(0,4);
+                     var m = (layers[i].feature.properties.time).substring(5,7);
+                     var mm = (layers[i].feature.properties.time).substring(14,16);
+                     var dd = y+m+d+"T"+h+mm;
+                     // console.log(dd);
+                     // var newT = moment(layers[i].feature.properties.time,"YYYY-MM-DDTHH:mm");
+                     // console.log(newT);
+                     // window.labels.push(layers[i].feature.properties.time);
+
+                // console.log(layers[i].feature);
+                // console.log(chartData);
+                // console.log(labels);
+                // console.log(layers[i].feature.geometry.coordinates);
+                // console.log(layers[i].feature.properties.coordTimes);
+                window.myChart.data.datasets[0].data.push((totalDistance/1609.34).toFixed(1)) ;
+
+                // window.myChart.data.datasets[0].data.shift();
+                // window.myChart.data.labels.shift();
+                window.myChart.update();
+                // console.log(myChart.data);
+                $('#dist1').text((totalDistance/1609.34).toFixed(1)+ " Miles");
+
+            }
+            if (layers[i].feature.properties.name == "33788"){
+                $('#dist1').text((totalDistance/1609.34).toFixed(1)+ " Miles");
+            }
+
             if (feature) {
                 layer.addData(feature);
                 if (this._addlastPoint && feature.geometry.type == "LineString") {

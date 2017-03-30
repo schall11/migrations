@@ -1,108 +1,72 @@
-var canvas = document.getElementById('chartContainer');
+window.onload = function () {
+var dps = []; // dataPoints
+        var dps2 =[];
 
-var data = {
-    labels: [],
-    datasets: [{
-        label: "Distance from Start",
-        fill: false,
-        lineTension: 0.9,
-        backgroundColor: "rgba(75,192,192,0.4)",
-        borderColor: "rgba(75,192,192,1)",
-        borderCapStyle: 'butt',
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderWidth: 4,
-        borderJoinStyle: 'miter',
-        pointBorderColor: "rgba(75,192,192,1)",
-        pointBackgroundColor: "#fff",
-        pointBorderWidth: 1,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: "rgba(75,192,192,1)",
-        pointHoverBorderColor: "rgba(220,220,220,1)",
-        pointHoverBorderWidth: 2,
-        pointRadius: 0,
-        pointHitRadius: 10,
-        data: [],
-    }]
-};
-canvas.width= 500;
-canvas.height=300;
-// window.myPieChart = new Chart(ctx).Pie(data);
-// window.myPieChart = new Chart(ctx).Line(data);
-// Reduce the animation steps for demo clarity.
-window.myChart= new Chart(canvas, {
-    type: 'line',
-    data: data,
-    // options: {
-    //     responsive:false
-    // }
-    options: {
-        title: {
-            display: true,
-            text: 'Distance from Start',
-            fontSize: 18,
-            padding:15
+		var chart = new CanvasJS.Chart("chartContainer",{
+			title :{
+				text: "Distance from Start"
+			},
+            axisX:{
+            valueFormatString: "DD-MMM" ,
+            labelAngle: -50,
+                title: "Date"
         },
-        legend: {
-            display: false
-        },
-        responsive:false,
-        animation: false,
-        scales: {
-            xAxes: [{
-                ticks: {
-                    fontSize: 16
-                },
-                type: 'time',
-                time: {
-                    displayFormats: {
-                        month: 'MMM YYYY'
-                    },
-                    unit: 'year'
-                }
-            }],
-            yAxes:[{
-                ticks:{
-                    max: 30,
-                    stepSize:10,
-                    beginAtZero:true,
-                    fontSize: 16
-                }
-            }]
-        }
-    }
-});
+            axisY:{
+			    title: "Miles"
+            },
+			data: [{
+				type: "line",
+				dataPoints: dps
+			}]
+		});
 
+		var xVal = 0;
+		var yVal = 0;
+		var updateInterval = 1;
+		var dataLength = 50000; // number of dataPoints visible at any point
 
-// setInterval(function(){
-//
-//     var yVal = parseFloat($('#dist1').text());
-//
-//         var xVal = $('#dateDisp').text();
-//         xVal = Date.parse(xVal);
-//         var z = [];
-//
-//         // console.log(z);
-//         if (dps2.indexOf(yVal)==-1){
-//             dps2.push(yVal);
-//              dps.push({
-//                 x: new Date(xVal),
-//                 y: yVal
-//             });
-//               myLiveChart.addData([yVal], new Date(xVal));
-//         }
-//   // Add two random numbers for each dataset
-//
-//   // Remove the first point so we dont just add values forever
-//   // myLiveChart.removeData();
-// }, 5000);
+		var updateChart = function (count) {
+			count = count || 1;
+			// count is number of times loop runs to generate random dataPoints.
+			yVal = parseFloat($('#dist1').text());
 
+			xVal = $('#dateDisp').text();
+			xVal = Date.parse(xVal);
+			var z = [];
 
+            // console.log(z);
+			if (dps2.indexOf(yVal)==-1){
+			    dps2.push(yVal);
+			     dps.push({
+					x: new Date(xVal),
+					y: yVal
+				});
+            }
+            // console.log(dps);
+            // console.log(dps);
 
+			// for (var j = 0; j < count; j++) {
+			// 	yVal = yVal +  Math.round(5 + Math.random() *(-5-5));
+			// 	dps.push({
+			// 		x: xVal,
+			// 		y: yVal
+			// 	});
+			// 	xVal++;
+			// };
+			if (dps.length > dataLength)
+			{
+				dps.shift();
+			}
 
+			chart.render();
+         //    console.log(dps);
+        //
+		};
 
+		// generates first set of dataPoints
+		updateChart(dataLength);
 
-
+		// update chart after specified time.
 var startDate = new Date();
 startDate.setUTCHours(0, 0, 0, 0);
 
@@ -575,7 +539,7 @@ legend2.onAdd = function (map) {
     return div;
 };
 var currentLegend = legend;
-// currentLegend.addTo(map);
+currentLegend.addTo(map);
 var groupedOverlays = {
   "Elk Group": {
     "Normal": gpxTimeLayer3,
@@ -624,21 +588,29 @@ var legendToggle = L.easyButton({
 legendToggle.addTo(map);
 map.on('overlayadd', function (eventLayer) {
     if (eventLayer.name === 'Deer 1') {
+        dps = [];
+        dps2 = [];
         map.flyToBounds(gpxLayer.getBounds(), {
         paddingBottomRight: [40, 40]
     })
     }
     else if  (eventLayer.name === 'Deer 2') {
+        dps = [];
+        dps2 = [];
        map.flyToBounds(gpxLayer2.getBounds(), {
         paddingBottomRight: [40, 40]
     })
     }
     else if  (eventLayer.group.name === 'Deer Group') {
+        dps = [];
+        dps2 = [];
        map.flyToBounds(gpxLayer4.getBounds(), {
         paddingBottomRight: [40, 40]
     })
     }
     else if  (eventLayer.group.name === 'Elk Group') {
+        dps = [];
+        dps2 = [];
        map.flyToBounds(gpxLayer3.getBounds(), {
         paddingBottomRight: [40, 40]
     })
@@ -666,6 +638,10 @@ L.control.scale({position: "topright"}).addTo(map);
 
 
 
+
+		setInterval(function(){updateChart()}, updateInterval);
+
+	}
 
 
 

@@ -77,6 +77,10 @@ L.TimeDimension = (L.Layer || L.Class).extend({
 		//console.log("mon",mon);
 		//console.log("yr",yr);
 		//$('#dateDisp').text(d.substring(0,7));
+        var xd = moment(d);
+        // console.log(xd);
+       window.myChart.data.labels.push(xd);
+       // console.log(window.myChart.data.labels);
 		$('#dateDisp').text(full);
         if (this._checkSyncedLayersReady(this._availableTimes[this._loadingTimeIndex])) {
             this._newTimeIndexLoaded();
